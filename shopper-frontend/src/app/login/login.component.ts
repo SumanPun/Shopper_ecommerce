@@ -22,7 +22,7 @@ export class LoginComponent {
 
   ngOnInit(): void {
     this.loginForm = this.fb.group({
-      email: [null, Validators.required],
+      email: [null, Validators.required, Validators.email],
       password: [null, Validators.required]
     })
   }
@@ -38,10 +38,23 @@ export class LoginComponent {
     if(username!='' && password!='' && username!=null && password!=null) {
       this.authService.login(username,password).subscribe(
         (response) => {
-          console.log(response.jwtToken);
-          console.log(response.jwtRefreshToken);
-          this.authService.loginUser(response.jwtToken);
-          this.snackBar.open('Success', 'OK', { duration:5000 });
+          console.log(response);
+          if(response.userId != null) {
+            const user = {
+              id: response.userId,
+              role: response.userRole
+            }
+            this.authService.saveUser(user);
+            this.authService.saveToken(response.jwtToken);
+            if(this.authService.isAdminLoggedIn()) {
+              this.router.navigateByUrl('admin/dashboard');
+            } else if(this.authService.isCustomerLoggedIn()) {
+              this.router.navigateByUrl('customer/dashboard');
+            }
+            this.snackBar.open("Login successful", "Close", { duration: 5000 });
+          } else {
+            this.snackBar.open("Invalid credentials", "Close", { duration: 5000, panelClass: "error-snackbar" });
+          }
         },
         (error) => {
           this.snackBar.open('Bad Credential', 'ERROR', { duration: 5000 });
