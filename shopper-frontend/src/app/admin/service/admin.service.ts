@@ -20,6 +20,18 @@ export class AdminService {
     })
   }
 
+  getAllCategories(): Observable<any> {
+    return this.http.post(BASIC_URL + 'product', {
+      headers: this.createAuthorizationHeader(),
+    })
+  }
+
+  addProduct(productDto: any): Observable<any> {
+    return this.http.post(BASIC_URL + 'product', productDto, {
+      headers: this.createAuthorizationHeader(),
+    })
+  }
+
   private createAuthorizationHeader():HttpHeaders {
     return new HttpHeaders().set(
       'Authorization', 'Bearer ' + this.authService.getToken()
