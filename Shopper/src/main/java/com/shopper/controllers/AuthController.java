@@ -29,6 +29,7 @@ public class AuthController {
     private final UserDetailsService userDetailsService;
     private final JwtUtil jwtTokenHelper;
     private final AuthService authService;
+    private final UserRepository  userRepository;
 
 
     @PostMapping("/authenticate")
@@ -43,9 +44,14 @@ public class AuthController {
         UserDetails userDetails = userDetailsService.loadUserByUsername(authenticationRequest.getUsername());
         String jwt = jwtTokenHelper.generateToken(userDetails.getUsername());
         String refreshToken = jwtTokenHelper.generateRefreshToken(userDetails.getUsername());
+        Optional<User> user = userRepository.findFirstByEmail(authenticationRequest.getUsername());
         AuthenticationResponse authenticationResponse = new AuthenticationResponse();
-        authenticationResponse.setJwtToken(jwt);
-        authenticationResponse.setJwtRefreshToken(refreshToken);
+        if(user.isPresent()) {
+            authenticationResponse.setJwtToken(jwt);
+            authenticationResponse.setJwtRefreshToken(refreshToken);
+            authenticationResponse.setUserId(user.get().getId());
+            authenticationResponse.setUserRole(user.get().getRole());
+        }
         return new ResponseEntity<>(authenticationResponse,HttpStatus.OK);
     }
     @GetMapping("/refresh")
