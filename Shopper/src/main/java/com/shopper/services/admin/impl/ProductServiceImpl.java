@@ -27,7 +27,7 @@ public class ProductServiceImpl implements ProductService {
         product.setPrice(productDto.getPrice());
         product.setImg(productDto.getImg().getBytes());
         product.setDescription(productDto.getDescription());
-        Category category = this.categoryRepository.findById(productDto.getCategoryId()).orElseThrow(()-> new ResourceNotFoundException("Category","CategoryId", productDto.getCategoryId()));
+        Category category = this.categoryRepository.findByProductId(productDto.getCategoryId()).orElseThrow(()-> new ResourceNotFoundException("Category","CategoryId", productDto.getCategoryId()));
         product.setCategory(category);
         return this.productRepository.save(product).getDto();
     }

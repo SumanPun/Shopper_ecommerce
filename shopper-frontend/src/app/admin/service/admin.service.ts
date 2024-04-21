@@ -21,13 +21,19 @@ export class AdminService {
   }
 
   getAllCategories(): Observable<any> {
-    return this.http.post(BASIC_URL + 'product', {
+    return this.http.get(BASIC_URL + 'category', {
       headers: this.createAuthorizationHeader(),
     })
   }
 
   addProduct(productDto: any): Observable<any> {
     return this.http.post(BASIC_URL + 'product', productDto, {
+      headers: this.createAuthorizationHeader(),
+    })
+  }
+
+  getAllProducts(): Observable<any> {
+    return this.http.get(BASIC_URL + 'product', {
       headers: this.createAuthorizationHeader(),
     })
   }
