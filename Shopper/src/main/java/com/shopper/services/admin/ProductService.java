@@ -10,4 +10,7 @@ public interface ProductService {
     public ProductDto createProduct(ProductDto productDto) throws IOException;
 
     public List<ProductDto> getProducts();
+
+    public List<ProductDto> getAllProductsByName(String name);
+    public boolean deleteProduct(Long id);
 }

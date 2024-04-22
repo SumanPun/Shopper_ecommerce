@@ -29,4 +29,19 @@ public class ProductController {
         List<ProductDto> productList = this.productService.getProducts();
         return ResponseEntity.ok(productList);
     }
+
+    @GetMapping("/product/search/{name}")
+    public ResponseEntity<List<ProductDto>> getProducts(@PathVariable String name) {
+        List<ProductDto> productList = this.productService.getAllProductsByName(name);
+        return ResponseEntity.ok(productList);
+    }
+
+    @DeleteMapping("/product/{id}")
+    public ResponseEntity<Void> deleteProduct(@PathVariable Long id) {
+        boolean deleteProduct = this.productService.deleteProduct(id);
+        if (deleteProduct) {
+            return ResponseEntity.noContent().build();
+        }
+        return ResponseEntity.notFound().build();
+    }
 }

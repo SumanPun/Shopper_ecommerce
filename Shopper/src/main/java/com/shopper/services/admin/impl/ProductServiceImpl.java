@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -35,6 +36,17 @@ public class ProductServiceImpl implements ProductService {
     public List<ProductDto> getProducts() {
         List<Product> listProducts = this.productRepository.getAllProducts();
         return listProducts.stream().map(Product::getDto).collect(Collectors.toList());
+    }
+
+    public List<ProductDto> getAllProductsByName(String name) {
+        List<Product> listProducts = this.productRepository.findAllByNameContaining(name);
+        return listProducts.stream().map(Product::getDto).collect(Collectors.toList());
+    }
+
+    public boolean deleteProduct(Long id) {
+        Product product = this.productRepository.findById(id).orElseThrow(()-> new ResourceNotFoundException("Product","Id",id));
+        this.productRepository.delete(product);
+        return true;
     }
 
 }

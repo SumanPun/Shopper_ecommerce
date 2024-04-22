@@ -52,11 +52,37 @@ export class PostProductComponent {
     })
   }
   
+  // addProduct(): void {
+  //   if(this.productForm.valid) {
+  //     this.adminService.addProduct(this.productForm.value).subscribe((res)=>{
+
+  //       if(res != null) {
+  //         this.snackBar.open('Product added successfully', 'Close', {
+  //           duration: 5000
+  //         });
+  //         this.route.navigateByUrl('/admin/dashboard');
+  //       }else {
+  //         this.snackBar.open(res.message, 'Close', {
+  //           duration: 5000, panelClass:'error-snackbar'
+  //         });
+  //       }
+  //     })
+  //   }else {
+  //     this.productForm.markAllAsTouched();
+  //   }
+  // }
+
   addProduct(): void {
     if(this.productForm.valid) {
-      this.adminService.addProduct(this.productForm.value).subscribe((res)=>{
+      const formData: FormData = new FormData();
+      formData.append('img', this.selectedFile);
+      formData.append('categoryId', this.productForm.get('categoryId').value);
+      formData.append('name', this.productForm.get('name').value);
+      formData.append('description', this.productForm.get('description').value);
+      formData.append('price', this.productForm.get('price').value);
+      this.adminService.addProduct(formData).subscribe((res)=>{
 
-        if(res != null) {
+        if(res.id != null) {
           this.snackBar.open('Product added successfully', 'Close', {
             duration: 5000
           });
@@ -68,7 +94,10 @@ export class PostProductComponent {
         }
       })
     }else {
-      this.productForm.markAllAsTouched();
+      for(const i in this.productForm.controls) {
+        this.productForm.controls[i].markAsDirty();
+        this.productForm.controls[i].updateValueAndValidity();
+      }
     }
   }
 }
